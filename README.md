@@ -1,11 +1,11 @@
-# Raj Vaya — Portfolio
+# Raj Vaya - Portfolio
 
 ![Made with HTML5](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
 ![Made with CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
 ![Deployed on Vercel](https://img.shields.io/badge/Vercel-000000?style=flat&logo=vercel&logoColor=white)
 
-> Personal portfolio website for **Raj Vaya** — DevOps & Platform Engineer specializing in Kubernetes, multi-cloud infrastructure, and CI/CD automation.
+> Personal portfolio website for **Raj Vaya** - DevOps & Platform Engineer specializing in Kubernetes, multi-cloud infrastructure, and CI/CD automation.
 
 🌐 **Live:** _add your Vercel URL here once deployed_
 
@@ -13,30 +13,29 @@
 
 ## About
 
-A clean, futuristic, single-file portfolio built with vanilla HTML, CSS, and JavaScript — no frameworks, no build step, no dependencies beyond Google Fonts. Designed with a "control plane" aesthetic: dark by default, electric-lime accent, glassmorphic surfaces, and subtle DevOps-themed details (terminal blocks, kubectl-style outputs, pod-status pills, animated stat counters).
+A clean, futuristic portfolio built with vanilla HTML, CSS, and JavaScript - no frameworks, no build step, no dependencies beyond Google Fonts. Designed with a "control plane" aesthetic: dark by default, electric-lime accent, glassmorphic surfaces, and subtle DevOps-themed details (terminal blocks, kubectl-style outputs, pod-status pills, animated stat counters).
 
-The site is structured as a single `index.html` with all CSS and JS inlined for fast first paint and zero deployment complexity.
+The site is organized for clarity: a thin `index.html` shell, separate `styles.css` and `script.js`, and **each page section in its own HTML partial under `sections/`**. The shell loads the partials at runtime via `fetch()` and stitches them into the page.
 
 ## Features
 
-- **Hero** — large profile portrait with conic-gradient ring, animated aurora background, mouse-tracking spotlight, status pill, rotating-role typewriter, and floating DevOps tags (`deploy.success`, `pods · 24/24 running`, `uptime · 99.99%`)
-- **About** — terminal-style profile output (`kubectl get profile`), interest tags, and a 4-card "Principles I work by" panel
-- **Education** — degree card with CGPA showcase and a "Core foundations" strip listing CS subjects
-- **Skills** — featured "Stack at a glance" panel with 10 branded tech logos (K8s, Docker, Terraform, GCP, etc.) plus categorized skill cards
-- **Services** — six service cards with thematic icons and per-service deliverables
-- **Resume** — live PDF preview embedded inline with summary, stats, and download button
-- **Contact** — clean form with email, phone, location, and social links
-- **Light/dark mode toggle** — full theme system via CSS variables, persisted to localStorage
-- **Fully responsive** — desktop, tablet, mobile
-- **Accessibility-friendly** — semantic HTML, high-contrast typography, alt text on images
+- **Hero** - large profile portrait with conic-gradient ring, animated aurora background, mouse-tracking spotlight, status pill, rotating-role typewriter, and floating DevOps tags
+- **About** - terminal-style profile output (`kubectl get profile`), interest tags, and a 4-card "Principles I work by" panel
+- **Education** - degree card with CGPA showcase and a "Core foundations" strip listing CS subjects
+- **Skills** - featured "Stack at a glance" panel with branded tech logos plus categorized skill cards
+- **Services** - six service cards with thematic icons and per-service deliverables
+- **Resume** - live PDF preview embedded inline with summary, stats, and download button
+- **Contact** - clean form with email, phone, location, and social links
+- **Light/dark mode toggle** - full theme system via CSS variables, persisted to localStorage
+- **Fully responsive** - desktop, tablet, mobile
 - **Smooth scroll-triggered reveal animations** via IntersectionObserver
 
 ## Tech Stack
 
 | Layer | Tools |
 |---|---|
-| Markup | HTML5 (semantic) |
-| Styling | CSS3 (custom properties, grid, flexbox, container queries) |
+| Markup | HTML5 (semantic, modular partials) |
+| Styling | CSS3 (custom properties, grid, flexbox) |
 | Interactivity | Vanilla JS (no frameworks) |
 | Typography | Bricolage Grotesque · Manrope · JetBrains Mono |
 | Hosting | Vercel (free tier) |
@@ -46,38 +45,97 @@ The site is structured as a single `index.html` with all CSS and JS inlined for 
 
 ```
 Portfolio/
-├── index.html                    # the entire site (HTML + CSS + JS)
+├── index.html                    # shell: <head>, nav, footer, main container
+├── styles.css                    # all styling
+├── script.js                     # loads sections, then initializes everything
+├── sections/
+│   ├── hero.html                 # hero + tech-stack marquee
+│   ├── about.html                # about prose, terminal, principles
+│   ├── education.html            # degree card + core foundations
+│   ├── skills.html               # "Stack at a glance" + skill cards
+│   ├── services.html             # six service cards
+│   ├── resume.html               # summary + inline PDF preview
+│   └── contact.html              # contact form + socials
 ├── profile.png                   # hero portrait image
-└── Raj_Vaya_DevOps_Resume.pdf    # downloadable resume + inline PDF preview
+├── Raj_Vaya_DevOps_Resume.pdf    # downloadable resume + inline PDF preview
+└── README.md
 ```
+
+## How the section loader works
+
+When the page loads, `script.js` runs a small `loadSections()` function that:
+
+1. Looks for `<main id="sections"></main>` in `index.html`
+2. Fetches each file listed in the `SECTIONS` array (`hero`, `about`, `education`, etc.) from the `sections/` folder
+3. Concatenates the HTML and injects it into the container
+4. Then runs `initApp()` which sets up theme toggle, scroll animations, typewriter, clock, mouse spotlight, and everything else
+
+To add, remove, or reorder sections, edit the `SECTIONS` array at the top of `script.js`:
+
+```js
+const SECTIONS = [
+  'hero',
+  'about',
+  'education',
+  'skills',
+  'services',
+  'resume',
+  'contact'
+];
+```
+
+To add a new section called e.g. "blog":
+1. Create `sections/blog.html` with your `<section id="blog">…</section>` markup
+2. Add `'blog'` to the array in the position you want it
+3. Add a link in the `<nav>` inside `index.html`
+
+## Where to find things
+
+| Looking for... | File | How |
+|---|---|---|
+| Hero title, tagline, CTAs | `sections/hero.html` | Edit directly |
+| About prose, principles | `sections/about.html` | Edit directly |
+| Education details, courses | `sections/education.html` | Edit directly |
+| Skill categories, tech logos | `sections/skills.html` | Edit directly |
+| Service cards & deliverables | `sections/services.html` | Edit directly |
+| Resume summary, stats | `sections/resume.html` | Edit directly |
+| Contact info, form fields | `sections/contact.html` | Edit directly |
+| Nav links, footer | `index.html` | Edit directly (always-visible chrome) |
+| Colors, fonts, spacing | `styles.css` | Top of file: `:root { --accent: ... }` |
+| Typewriter roles | `script.js` | Search for `const roles = [` |
+| Live clock, counters | `script.js` | Search for `ccClock` / `data-count` |
 
 ## Local Development
 
-Clone the repo and open it locally:
+Clone the repo:
 
 ```bash
 git clone https://github.com/rajvaya13/Portfolio.git
 cd Portfolio
 ```
 
-Because the site is fully static, you have two options:
+⚠️ **A local server is required**, because the section loader uses `fetch()` which is blocked when opening `index.html` directly via the `file://` protocol.
 
-**Option 1 — Just open the file**
-Double-click `index.html`. Works for everything *except* the inline PDF preview, which most browsers block under the `file://` protocol for security.
+Pick whichever you have:
 
-**Option 2 — Run a local server (recommended)**
 ```bash
 # Python (built into macOS / Linux / Git for Windows)
 python -m http.server 8000
 
 # Or Node.js
 npx serve
+
+# Or VS Code extension
+# Install "Live Server" by Ritwick Dey, then right-click index.html → "Open with Live Server"
 ```
-Then visit `http://localhost:8000` — everything including the PDF preview will work.
+
+Then visit **http://localhost:8000** in your browser.
+
+If you forget and open the file directly, the site shows a friendly fallback explaining what to do.
 
 ## Customization
 
-All visual tokens (colors, spacing, fonts, shadows) live in CSS variables at the top of the `<style>` block in `index.html`:
+All visual tokens live in CSS variables at the top of `styles.css`:
 
 ```css
 :root {
@@ -91,7 +149,7 @@ All visual tokens (colors, spacing, fonts, shadows) live in CSS variables at the
 
 To rebrand: change `--accent` (used everywhere) and the rest cascades.
 
-To swap content (job titles, role descriptions, skills, etc.): search for the section by its HTML comment (`<!-- HERO -->`, `<!-- ABOUT -->`, etc.) and edit inline.
+To swap content: open the relevant file under `sections/` and edit inline.
 
 ## Deployment
 
@@ -104,8 +162,10 @@ Deployed automatically to Vercel on every push to `main`:
 Want to fork-and-deploy your own? After forking:
 1. Sign up at [vercel.com](https://vercel.com) with GitHub
 2. **Add New… → Project →** import your forked repo
-3. Leave all settings default (it's a static site — no build step)
+3. Leave all settings default (it's a static site - no build step)
 4. Click **Deploy**
+
+Vercel serves over HTTPS, so the section loader works out of the box.
 
 ## Roadmap
 
@@ -123,13 +183,13 @@ Want to fork-and-deploy your own? After forking:
 
 ## License
 
-MIT — feel free to fork, customize, and use as a starting point for your own portfolio. Attribution appreciated but not required.
+MIT - feel free to fork, customize, and use as a starting point for your own portfolio. Attribution appreciated but not required.
 
 ---
 
 ## Contact
 
-**Raj Vaya** — DevOps & Platform Engineer
+**Raj Vaya** - DevOps & Platform Engineer
 
 - 📧 [raj.vaya2017@gmail.com](mailto:raj.vaya2017@gmail.com)
 - 💼 [linkedin.com/in/raj-vaya](https://www.linkedin.com/in/raj-vaya)
