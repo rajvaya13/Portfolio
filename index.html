@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>~/raj-vaya — devops@platform-cert</title>
+<meta name="description" content="Raj Vaya — DevOps Engineer · Platform Engineering · SRE. Kubernetes, Terraform, GitHub Actions, Apigee Hybrid platform certification. Type 'help' to begin." />
+<meta name="author" content="Raj Vaya" />
+<meta property="og:title" content="Raj Vaya — DevOps Engineer · SRE" />
+<meta property="og:description" content="Platform certification across 7 Kubernetes flavors. 4.5+ years of DevOps across global banking and Google Cloud." />
+<meta property="og:type" content="website" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&family=VT323&display=swap" rel="stylesheet" />
+
+<style>
+:root{
+  --bg-0:#0f1117;
+  --bg-1:#161821;
+  --bg-2:#1c1f2b;
+  --bg-3:#252836;
+  --line:#2a2e3f;
+  --fg-0:#c8d3f5;
+  --fg-1:#a9b1d6;
+  --fg-2:#8089b3;
+  --fg-3:#565f89;
+  --cyan:#7dcfff;
+  --blue:#82aaff;
+  --green:#c3e88d;
+  --magenta:#c099ff;
+  --orange:#ff966c;
+  --red:#ff757f;
+  --yellow:#ffc777;
+  --pink:#fca7ea;
+  --shadow:0 0 0 1px var(--line), 0 30px 80px -20px #000;
+  --mono:'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --crt:'VT323', var(--mono);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;}
+body{
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(125,207,255,.06), transparent 60%),
+    radial-gradient(ellipse 60% 50% at 100% 100%, rgba(192,153,255,.05), transparent 60%),
+    var(--bg-0);
+  color:var(--fg-0);
+  font-family:var(--mono);
+  font-size:14px;
+  line-height:1.55;
+  overflow:hidden;
+  -webkit-font-smoothing:antialiased;
+}
+
+body::before{
+  content:"";
+  position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.012) 0 1px,transparent 1px 3px);
+  mix-blend-mode:overlay;
+}
+
+.app{
+  height:100vh;
+  padding:14px;
+  display:flex;flex-direction:column;gap:0;
+}
+.window{
+  flex:1;
+  background:var(--bg-1);
+  border-radius:10px;
+  box-shadow:var(--shadow);
+  display:flex;flex-direction:column;
+  overflow:hidden;
+  border:1px solid var(--line);
+}
+.titlebar{
+  display:flex;align-items:center;gap:14px;
+  padding:10px 14px;
+  background:linear-gradient(to bottom,var(--bg-2),var(--bg-1));
+  border-bottom:1px solid var(--line);
+  user-select:none;
+}
+.dots{display:flex;gap:8px}
+.dot{width:12px;height:12px;border-radius:50%;display:inline-block}
+.dot.r{background:#ff5f57;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.3)}
+.dot.y{background:#febc2e;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.3)}
+.dot.g{background:#28c840;box-shadow:inset 0 0 0 .5px rgba(0,0,0,.3)}
+.title{
+  flex:1;text-align:center;color:var(--fg-2);font-size:12px;letter-spacing:.04em;
+}
+.title b{color:var(--fg-0);font-weight:500}
+.tabs{display:flex;gap:4px;font-size:11px;color:var(--fg-3)}
+.tab{padding:3px 8px;border-radius:4px}
+.tab.active{background:var(--bg-3);color:var(--cyan)}
+
+.split{
+  flex:1;
+  display:grid;
+  grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);
+  min-height:0;
+}
+.pane{
+  min-height:0;min-width:0;
+  display:flex;flex-direction:column;
+  background:var(--bg-1);
+}
+.pane + .pane{border-left:1px solid var(--line)}
+
+.term{
+  padding:18px 20px 8px;
+  overflow-y:auto;overflow-x:hidden;
+  flex:1;
+  scrollbar-width:thin;
+  scrollbar-color:var(--bg-3) transparent;
+}
+.term::-webkit-scrollbar{width:8px}
+.term::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:4px}
+
+.term-line{white-space:pre-wrap;word-break:break-word}
+.term-line + .term-line{margin-top:2px}
+
+.prompt-line{display:flex;gap:8px;align-items:flex-start;margin-top:8px}
+.prompt{color:var(--green);white-space:nowrap;flex-shrink:0}
+.prompt .at{color:var(--fg-2)}
+.prompt .host{color:var(--magenta)}
+.prompt .path{color:var(--blue)}
+.prompt .arrow{color:var(--cyan);font-weight:700}
+
+.input-row{display:flex;flex:1;gap:0;align-items:center;min-width:0}
+#cmd{
+  flex:1;background:transparent;border:0;outline:0;
+  color:var(--fg-0);font:inherit;caret-color:transparent;
+  min-width:0;
+}
+.fake-caret{
+  display:inline-block;width:8px;height:1.05em;
+  background:var(--cyan);margin-left:1px;vertical-align:text-bottom;
+  animation:blink 1.05s steps(1,end) infinite;
+}
+@keyframes blink{50%{opacity:0}}
+
+.c-cyan{color:var(--cyan)} .c-blue{color:var(--blue)} .c-green{color:var(--green)}
+.c-mag{color:var(--magenta)} .c-orange{color:var(--orange)} .c-red{color:var(--red)}
+.c-yellow{color:var(--yellow)} .c-pink{color:var(--pink)} .c-dim{color:var(--fg-3)}
+.c-fg{color:var(--fg-0)} .b{font-weight:700}
+.box{
+  display:inline-block;padding:1px 6px;border-radius:3px;
+  background:var(--bg-3);color:var(--fg-0);
+  font-size:.86em;
+}
+.box.cyan{background:rgba(125,207,255,.12);color:var(--cyan)}
+.box.green{background:rgba(195,232,141,.12);color:var(--green)}
+.box.mag{background:rgba(192,153,255,.12);color:var(--magenta)}
+.box.orange{background:rgba(255,150,108,.12);color:var(--orange)}
+.box.red{background:rgba(255,117,127,.12);color:var(--red)}
+.box.yellow{background:rgba(255,199,119,.12);color:var(--yellow)}
+
+a.link{color:var(--cyan);text-decoration:none;border-bottom:1px dashed var(--fg-3)}
+a.link:hover{color:var(--green);border-bottom-color:var(--green)}
+
+.ascii{
+  color:var(--cyan);
+  font-size:11px;line-height:1.05;
+  white-space:pre;
+  text-shadow:0 0 12px rgba(125,207,255,.25);
+  margin:6px 0 10px;
+}
+.ascii.green{color:var(--green);text-shadow:0 0 12px rgba(195,232,141,.25)}
+.ascii.mag{color:var(--magenta);text-shadow:0 0 12px rgba(192,153,255,.25)}
+.ascii.orange{color:var(--orange);text-shadow:0 0 12px rgba(255,150,108,.25)}
+
+.kv{display:grid;grid-template-columns:max-content 1fr;column-gap:18px;row-gap:2px}
+.kv b{color:var(--cyan);font-weight:500}
+.kv span{color:var(--fg-1)}
+
+.proj{
+  margin:6px 0 14px;
+  padding:8px 10px 8px 12px;
+  border-left:2px solid var(--magenta);
+  background:linear-gradient(to right,rgba(192,153,255,.04),transparent 60%);
+}
+.proj.bank{border-left-color:var(--orange);background:linear-gradient(to right,rgba(255,150,108,.04),transparent 60%)}
+.proj h{display:block;color:var(--fg-0);font-weight:700;margin-bottom:2px}
+.proj .meta{color:var(--fg-3);font-size:.92em;margin-bottom:4px}
+.proj .row{margin:2px 0;color:var(--fg-1)}
+.proj .stats{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+
+.skill-row{display:grid;grid-template-columns:130px 1fr;column-gap:14px;align-items:center;margin:2px 0}
+.skill-row .lbl{color:var(--cyan)}
+.skill-row .items{color:var(--fg-1)}
+
+.lang-row{display:grid;grid-template-columns:90px 200px max-content;gap:14px;align-items:center;margin:3px 0;font-size:13px}
+.lang-row .bar2{height:6px;background:var(--bg-3);border-radius:3px;overflow:hidden}
+.lang-row .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+
+.boot-line{opacity:0;animation:bootIn .25s ease forwards}
+@keyframes bootIn{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+.ok{color:var(--green)} .warn{color:var(--yellow)} .info{color:var(--cyan)} .err{color:var(--red)}
+
+.sidepane{padding:14px 16px;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.sidepane::-webkit-scrollbar{width:6px}
+.sidepane::-webkit-scrollbar-thumb{background:var(--bg-3);border-radius:3px}
+
+.card{
+  background:var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:11px 13px;
+}
+.card h3{
+  font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--fg-3);font-weight:500;margin-bottom:9px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card h3 .live{
+  display:inline-flex;align-items:center;gap:5px;color:var(--green);
+  font-size:9.5px;
+}
+.card h3 .live::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{50%{opacity:.4}}
+
+.profile{
+  display:grid;grid-template-columns:64px 1fr;gap:12px;align-items:center;
+}
+.avatar{
+  width:64px;height:64px;border-radius:6px;overflow:hidden;
+  border:1px solid var(--cyan);
+  position:relative;
+  background:var(--bg-3);
+  box-shadow:0 0 0 3px rgba(125,207,255,.08), 0 0 18px rgba(125,207,255,.15);
+}
+.avatar img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  filter:contrast(1.02) saturate(.92);
+}
+.avatar::after{
+  content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,rgba(125,207,255,.08) 0 1px,transparent 1px 3px);
+  pointer-events:none;
+}
+.profile .info .name{color:var(--fg-0);font-weight:700;font-size:14px;line-height:1.2}
+.profile .info .role{color:var(--cyan);font-size:11.5px;margin-top:2px}
+.profile .info .loc{color:var(--fg-3);font-size:11px;margin-top:1px}
+.profile .info .status{
+  display:inline-flex;align-items:center;gap:5px;font-size:11px;color:var(--green);
+  margin-top:4px;
+}
+.profile .info .status::before{
+  content:"";width:6px;height:6px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 6px var(--green);animation:pulse 1.6s ease-in-out infinite;
+}
+
+.gauge{margin:8px 0}
+.gauge-head{display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:3px}
+.gauge-head .lbl{color:var(--fg-1)}
+.gauge-head .val{color:var(--fg-0);font-variant-numeric:tabular-nums}
+.bar{height:5px;background:var(--bg-3);border-radius:2px;overflow:hidden;position:relative}
+.bar-fill{height:100%;border-radius:2px;transition:width .6s ease}
+.bar-fill.cyan{background:linear-gradient(90deg,#7dcfff,#82aaff)}
+.bar-fill.green{background:linear-gradient(90deg,#c3e88d,#7dcfff)}
+.bar-fill.mag{background:linear-gradient(90deg,#c099ff,#fca7ea)}
+.bar-fill.orange{background:linear-gradient(90deg,#ffc777,#ff966c)}
+
+.cluster-row{
+  display:grid;grid-template-columns:1fr max-content max-content;
+  gap:10px;align-items:center;font-size:12px;padding:4px 0;
+}
+.cluster-row + .cluster-row{border-top:1px dashed var(--line)}
+.cluster-row .name{color:var(--fg-0)}
+.cluster-row .region{color:var(--fg-3);font-size:11px}
+.cluster-row .status{display:flex;align-items:center;gap:5px;font-size:11px}
+.cluster-row .status::before{
+  content:"";width:6px;height:6px;border-radius:50%;
+}
+.cluster-row .status.ok{color:var(--green)} .cluster-row .status.ok::before{background:var(--green);box-shadow:0 0 6px var(--green)}
+.cluster-row .status.warn{color:var(--yellow)} .cluster-row .status.warn::before{background:var(--yellow);box-shadow:0 0 6px var(--yellow)}
+.cluster-row .status.run{color:var(--cyan)} .cluster-row .status.run::before{background:var(--cyan);box-shadow:0 0 6px var(--cyan);animation:pulse 1.2s infinite}
+.cluster-row .status.q{color:var(--fg-3)} .cluster-row .status.q::before{background:var(--fg-3)}
+
+.spark{
+  display:flex;align-items:flex-end;gap:2px;height:34px;
+}
+.spark .b{
+  flex:1;background:linear-gradient(to top,var(--cyan),rgba(125,207,255,.3));
+  min-height:2px;border-radius:1px;transition:height .5s ease;
+}
+
+.feed{font-size:11.5px;line-height:1.6;color:var(--fg-1)}
+.feed .t{color:var(--fg-3);margin-right:6px;font-variant-numeric:tabular-nums}
+.feed .l{color:var(--green)}
+.feed .l.warn{color:var(--yellow)}
+.feed .l.err{color:var(--red)}
+.feed .l.info{color:var(--cyan)}
+
+.statusbar{
+  display:flex;align-items:center;gap:0;
+  background:var(--bg-2);
+  border-top:1px solid var(--line);
+  font-size:11px;color:var(--fg-1);
+  user-select:none;
+  flex-shrink:0;
+}
+.sb-seg{padding:5px 12px;display:flex;align-items:center;gap:6px}
+.sb-seg.mode{background:var(--green);color:var(--bg-0);font-weight:700;letter-spacing:.04em}
+.sb-seg.path{background:var(--bg-3);color:var(--cyan)}
+.sb-seg.spacer{flex:1}
+.sb-seg.right{color:var(--fg-2)}
+.sb-seg.right b{color:var(--fg-0);font-weight:500;margin-left:4px}
+
+@media (max-width:880px){
+  body{font-size:13px}
+  .app{padding:8px}
+  .split{grid-template-columns:1fr;grid-template-rows:1fr auto}
+  .pane + .pane{border-left:0;border-top:1px solid var(--line);max-height:42vh}
+  .sidepane{padding:10px 12px}
+  .ascii{font-size:8px}
+  .title{font-size:11px}
+  .tabs{display:none}
+  .sb-seg.right:nth-child(4),.sb-seg.right:nth-child(5){display:none}
+}
+@media (max-width:520px){
+  .ascii{font-size:6.5px}
+  .skill-row{grid-template-columns:100px 1fr}
+}
+
+.matrix-overlay{
+  position:fixed;inset:0;background:#000;z-index:9000;
+  font-family:var(--crt);color:var(--green);overflow:hidden;
+  cursor:pointer;
+}
+.matrix-overlay .hint{
+  position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+  color:var(--fg-2);font-family:var(--mono);font-size:12px;
+}
+.matrix-overlay canvas{display:block;width:100%;height:100%}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="window">
+    <div class="titlebar">
+      <div class="dots"><i class="dot r"></i><i class="dot y"></i><i class="dot g"></i></div>
+      <div class="title"><b>raj@platform-cert</b>: ~/devops &nbsp; — &nbsp; <span style="color:var(--fg-3)">zsh • 132×42</span></div>
+      <div class="tabs">
+        <span class="tab active">terminal</span>
+        <span class="tab">system</span>
+      </div>
+    </div>
+
+    <div class="split">
+      <div class="pane" id="termPane">
+        <div class="term" id="term"></div>
+      </div>
+
+      <div class="pane sidepane">
+        <div class="card">
+          <h3>identity <span class="live">authenticated</span></h3>
+          <div class="profile">
+            <div class="avatar"><img src="profile.png" alt="Raj Vaya" /></div>
+            <div class="info">
+              <div class="name">Raj Vaya</div>
+              <div class="role">DevOps Engineer · SRE</div>
+              <div class="loc">Pune, IN · remote-friendly</div>
+              <div class="status">open to opportunities</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>system <span class="live">live</span></h3>
+          <div class="gauge"><div class="gauge-head"><span class="lbl">cpu</span><span class="val" id="cpuVal">—</span></div><div class="bar"><div class="bar-fill cyan" id="cpuBar" style="width:0"></div></div></div>
+          <div class="gauge"><div class="gauge-head"><span class="lbl">mem</span><span class="val" id="memVal">—</span></div><div class="bar"><div class="bar-fill green" id="memBar" style="width:0"></div></div></div>
+          <div class="gauge"><div class="gauge-head"><span class="lbl">net i/o</span><span class="val" id="netVal">—</span></div><div class="bar"><div class="bar-fill mag" id="netBar" style="width:0"></div></div></div>
+          <div class="gauge"><div class="gauge-head"><span class="lbl">helm p99</span><span class="val" id="latVal">—</span></div><div class="bar"><div class="bar-fill orange" id="latBar" style="width:0"></div></div></div>
+        </div>
+
+        <div class="card">
+          <h3>cert jobs · last 60s</h3>
+          <div class="spark" id="spark"></div>
+          <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px">
+            <span class="c-dim">peak <b class="c-fg" id="rpsPeak">—</b></span>
+            <span class="c-dim">running <b class="c-green" id="rpsNow">—</b></span>
+            <span class="c-dim">pass% <b class="c-fg" id="errPct">98.4</b></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>certification matrix</h3>
+          <div class="cluster-row"><div><div class="name">gke-prod</div><div class="region">gcp · k8s 1.30</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status ok">passed</div></div>
+          <div class="cluster-row"><div><div class="name">gke-on-aws</div><div class="region">aws · k8s 1.30</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status run">running</div></div>
+          <div class="cluster-row"><div><div class="name">eks</div><div class="region">aws · k8s 1.30</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status ok">passed</div></div>
+          <div class="cluster-row"><div><div class="name">aks</div><div class="region">azure · k8s 1.29</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status run">running</div></div>
+          <div class="cluster-row"><div><div class="name">openshift-aws</div><div class="region">red hat · k8s 1.30</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status ok">passed</div></div>
+          <div class="cluster-row"><div><div class="name">vsphere</div><div class="region">vmware · k8s 1.28</div></div><div class="c-dim" style="font-size:11px">apigee 1.12</div><div class="status warn">retry</div></div>
+          <div class="cluster-row"><div><div class="name">bare-metal</div><div class="region">on-prem · k8s 1.30</div></div><div class="c-dim" style="font-size:11px">apigee 1.13</div><div class="status q">queued</div></div>
+        </div>
+
+        <div class="card">
+          <h3>activity</h3>
+          <div class="feed" id="feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="statusbar">
+      <div class="sb-seg mode">NORMAL</div>
+      <div class="sb-seg path">~/devops</div>
+      <div class="sb-seg spacer"></div>
+      <div class="sb-seg right">tmux <b>0:term*</b></div>
+      <div class="sb-seg right">ctx <b>gke-prod</b></div>
+      <div class="sb-seg right">↑ <b id="upt">0d 00:00:00</b></div>
+      <div class="sb-seg right" id="clock">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   PROFILE — Raj Vaya
+============================================================ */
+const PROFILE = {
+  name:     'Raj Vaya',
+  handle:   'raj',
+  host:     'platform-cert',
+  role:     'DevOps Engineer · Platform Engineering · SRE',
+  tagline:  "I keep platforms boring — even when they're certified across 7 Kubernetes flavors.",
+  location: 'Pune, IN  ·  remote-friendly',
+  email:    'raj.vaya2017@gmail.com',
+  phone:    '+91 83858 83914',
+  github:   'https://github.com/rajvaya13',
+  linkedin: 'https://www.linkedin.com/in/raj-vaya/',
+  resume:   'resume.pdf',
+  yearsXp:  4.5,
+
+  bio: [
+    "DevOps Engineer with 4.5+ years across two ends of the enterprise spectrum:",
+    "two years hardening release pipelines for a global tier-1 bank, and now",
+    "certifying Apigee Hybrid against every Kubernetes flavor that exists for",
+    "Google Cloud — GKE, EKS, AKS, OpenShift, vSphere, bare-metal, the lot.",
+    "",
+    "Comfortable everywhere from Helm chart debug to Terraform to Golang bugfixes.",
+    "I'd rather automate twice than do it manually once.",
+  ],
+
+  skills: [
+    { lbl:'orchestration', items:['Kubernetes','Docker','Helm'] },
+    { lbl:'ci/cd',         items:['GitHub Actions','TeamCity','Jenkins','Rapid','Kokoro'] },
+    { lbl:'iac',           items:['Terraform','Ansible'] },
+    { lbl:'cloud',         items:['GCP','GKE','EKS','AKS','OpenShift','vSphere','bare-metal'] },
+    { lbl:'observability', items:['New Relic','SNMP','Logging','Monitoring'] },
+    { lbl:'security',      items:['JFrog Xray','DevSecOps','Vulnerability Scanning'] },
+    { lbl:'languages',     items:['Golang','Java','Bash','Shell','YAML'] },
+    { lbl:'platform',      items:['Apigee Hybrid','PostgreSQL','Maven','JUnit','Artifactory'] },
+    { lbl:'workflow',      items:['Git','Bitbucket','Jira','Confluence','Buganizer','Agile'] },
+  ],
+
+  projects: [
+    {
+      name:  'apigee hybrid platform certification',
+      meta:  '2025 — present  ·  Google Cloud client  ·  certification engineer',
+      desc:  "Validate Apigee Hybrid releases against every Kubernetes platform Google supports — GKE, EKS, AKS, OpenShift, vSphere, bare-metal, GKE-on-AWS — across multiple K8s versions per release. I run the test suites, debug what breaks, and sign off when it's stable.",
+      stats: [['platforms','7'],['k8s versions','3+'],['cycle time','-40%'],['pass rate','98.4%']],
+      stack: ['Kubernetes','Helm','Apigee Hybrid','Rapid','Kokoro']
+    },
+    {
+      name:  'release-portal → rapid migration',
+      meta:  '2025  ·  Google Cloud client  ·  lead',
+      desc:  "Old flow: Rapid → Release Portal → Kokoro. Every test failure meant manually re-entering parameters into Release Portal — a single K8s cert took 6–7 hours. I migrated everything to call Kokoro directly from Rapid. One-click reruns, no middleman. Built in Google3 with GCL and NCL.",
+      stats: [['manual effort','-50%'],['runtime','-40%'],['cert time','7h → 4h']],
+      stack: ['Rapid','Kokoro','GCL','NCL','Google3']
+    },
+    {
+      name:  'postgresql 9.6 → modern migration',
+      meta:  '2025  ·  Google Cloud client  ·  contributor',
+      desc:  "pg_dump can't talk to 9.6, so straight upgrades were off the table. Used GCS bucket export/import with IAM-bound service accounts to lift each instance into a fresh v10 cluster. Rolling, one instance at a time, prod and E2E.",
+      stats: [['version','9.6 → 10+'],['envs','prod + e2e'],['downtime','zero']],
+      stack: ['PostgreSQL','GCP IAM','GCS','Cloud SQL']
+    },
+    {
+      name:  'kubernetes-scaled snmp monitoring',
+      meta:  '2022 — 2024  ·  Global banking client  ·  contributor',
+      desc:  "64,000+ networking devices send SNMP traps to be monitored in New Relic. Their reference Docker image only handled ~4,000 logs per container — we'd drop traffic on bursts. Wrapped it in Kubernetes with HPA so the fleet expands when traps spike, contracts when quiet.",
+      stats: [['devices','64,000+'],['per-pod cap','4k logs'],['scale','elastic']],
+      stack: ['Kubernetes','Docker','New Relic','SNMP','HPA']
+    },
+    {
+      name:  'vulnerability-scan & artifact-promotion pipeline',
+      meta:  '2022 — 2024  ·  Global banking client  ·  designer',
+      desc:  "Two-stage GitHub Actions pipeline. Stage 1: pull external images/binaries, scan with JFrog Xray, auto-create Jira tickets for critical/high CVEs (assigned to vendor), push clean artifacts to private Artifactory. Stage 2: poll ServiceNow for change-ticket approval, then promote private → public so the rest of the bank can consume.",
+      stats: [['pipelines','2 stages'],['scanners','jfrog xray'],['integrations','jira + servicenow']],
+      stack: ['GitHub Actions','JFrog Xray','Artifactory','Jira','ServiceNow']
+    },
+    {
+      name:  'maven + junit test framework on teamcity',
+      meta:  '2022 — 2024  ·  Global banking client  ·  contributor',
+      desc:  "Built a Java test suite (Maven + JUnit) that runs against the application packages we built from scanned binaries. Wired into TeamCity so every build runs the suite, and Ansible deploys the survivors.",
+      stats: [['testing','weeks → hours'],['frameworks','maven + junit'],['ci','teamcity']],
+      stack: ['Java','Maven','JUnit','TeamCity','Ansible']
+    },
+    {
+      name:  'self-service vm provisioning',
+      meta:  '2022 — 2024  ·  Global banking client  ·  contributor',
+      desc:  "GitHub Actions workflow wrapping Terraform — engineers fill the form, hit run, get a VM. Standardized the build, killed the ticket queue.",
+      stats: [['automation','full'],['provisioning','self-service']],
+      stack: ['Terraform','GitHub Actions']
+    },
+  ],
+
+  experience: [
+    { when:'2025 — present', role:'DevOps Engineer · Apigee Hybrid Platform Cert', org:'Accenture (Google Cloud client)',  loc:'Pune, IN' },
+    { when:'2021 — 2024',    role:'DevOps Engineer · DevOps & Observability',      org:'Accenture (Global Banking client)', loc:'Gurugram, IN' },
+  ],
+
+  education: [
+    { when:'2017 — 2021', deg:'B.E. in Information Technology', org:'Walchand Institute of Technology', loc:'Solapur, MH', extra:'CGPA 8.87 / 10' },
+  ],
+
+  certs: [
+    { y:'2024', name:'Google Cloud Professional Cloud DevOps Engineer' },
+    { y:'2022', name:'Google Cloud Associate Cloud Engineer' },
+  ],
+
+  languages: [
+    { name:'English', level:'professional', pct:80 },
+    { name:'Hindi',   level:'native',       pct:100 },
+  ],
+
+  hobbies: [
+    { ico:'▲', name:'trekking & hiking',     note:'high places, no signal, big views' },
+    { ico:'♞', name:'chess',                 note:'long games, slow climbs' },
+    { ico:'◢', name:'valorant + other games',note:'lurking, peeking, occasionally clutching' },
+    { ico:'≈', name:'travel',                note:'mountains and oceans, in that order' },
+  ],
+};
+
+/* ASCII banner — "RAJ VAYA" in ANSI Shadow style */
+const BANNER = String.raw`
+██████╗   █████╗      ██╗    ██╗   ██╗  █████╗  ██╗   ██╗  █████╗ 
+██╔══██╗ ██╔══██╗     ██║    ██║   ██║ ██╔══██╗ ╚██╗ ██╔╝ ██╔══██╗
+██████╔╝ ███████║     ██║    ██║   ██║ ███████║  ╚████╔╝  ███████║
+██╔══██╗ ██╔══██║██   ██║    ╚██╗ ██╔╝ ██╔══██║   ╚██╔╝   ██╔══██║
+██║  ██║ ██║  ██║╚█████╔╝     ╚████╔╝  ██║  ██║    ██║    ██║  ██║
+╚═╝  ╚═╝ ╚═╝  ╚═╝ ╚════╝       ╚═══╝   ╚═╝  ╚═╝    ╚═╝    ╚═╝  ╚═╝`;
+
+/* ============================================================
+   Renderer
+============================================================ */
+const $term = document.getElementById('term');
+
+function el(tag, cls, html){ const e=document.createElement(tag); if(cls) e.className=cls; if(html!==undefined) e.innerHTML=html; return e; }
+function appendLine(html, cls=''){ const d=el('div', 'term-line '+cls, html); $term.appendChild(d); scrollBottom(); return d; }
+function scrollBottom(){ $term.scrollTop = $term.scrollHeight; }
+
+function promptHTML(){
+  return `<span class="prompt"><span class="c-green">${PROFILE.handle}</span><span class="at">@</span><span class="host">${PROFILE.host}</span><span class="at">:</span><span class="path">~/devops</span><span class="arrow"> ❯</span></span>`;
+}
+
+const out = {
+  help(){
+    const cmds = [
+      ['help',          'show this menu'],
+      ['whoami',        'who am i'],
+      ['skills',        'tech i work with daily'],
+      ['projects',      'selected work'],
+      ['experience',    'work history'],
+      ['education',     'where i studied'],
+      ['certs',         'certifications'],
+      ['platforms',     'kubernetes platforms i certify on'],
+      ['hobbies',       'when i\'m off-call'],
+      ['languages',     'spoken'],
+      ['contact',       'get in touch'],
+      ['resume',        'open my resume PDF'],
+      ['neofetch',      'system info'],
+      ['ls · cat <f>',  'pretend filesystem'],
+      ['theme <name>',  'tokyo · matrix · amber'],
+      ['date · uptime', 'time things'],
+      ['history',       'commands so far'],
+      ['clear',         'clear the terminal (ctrl+l)'],
+      ['sudo hire-me',  'the most important command'],
+      ['matrix',        '...'],
+    ];
+    let h = `<span class="c-dim">commands — tab to autocomplete · ↑/↓ for history</span>\n\n`;
+    h += '<div class="kv">' + cmds.map(([k,v])=>`<b>${k}</b><span>${v}</span>`).join('') + '</div>';
+    return h;
+  },
+
+  whoami(){
+    let h = `<span class="ascii">${BANNER}</span>`;
+    h += `<div><span class="c-fg b">${PROFILE.name}</span> <span class="c-dim">/</span> <span class="c-cyan">${PROFILE.role}</span></div>`;
+    h += `<div class="c-dim" style="margin-bottom:8px">${PROFILE.location}</div>`;
+    h += PROFILE.bio.map(l=>`<div>${l||'&nbsp;'}</div>`).join('');
+    h += `<div style="margin-top:8px"><span class="c-dim">→ try:</span> <span class="box cyan">projects</span> <span class="c-dim">·</span> <span class="box mag">platforms</span> <span class="c-dim">·</span> <span class="box green">sudo hire-me</span></div>`;
+    return h;
+  },
+
+  skills(){
+    let h = `<span class="c-dim"># my toolbox — opinionated, not exhaustive</span>\n\n`;
+    h += PROFILE.skills.map(s=>{
+      const items = s.items.map(i=>`<span class="box">${i}</span>`).join(' ');
+      return `<div class="skill-row"><div class="lbl">${s.lbl}</div><div class="items">${items}</div></div>`;
+    }).join('');
+    return h;
+  },
+
+  projects(){
+    let h = `<span class="c-dim"># selected work · ${PROFILE.projects.length} projects · </span>` +
+            `<span class="c-cyan">cat &lt;keyword&gt;</span><span class="c-dim"> for one</span>\n\n`;
+    h += PROFILE.projects.map(p=>{
+      const isBank = /banking/i.test(p.meta);
+      const stats = p.stats.map(([k,v])=>`<span class="box ${isBank?'orange':'cyan'}">${k}: <b>${v}</b></span>`).join(' ');
+      const stack = p.stack.map(t=>`<span class="box">${t}</span>`).join(' ');
+      return `<div class="proj ${isBank?'bank':''}">
+        <h>▸ ${p.name}</h>
+        <div class="meta">${p.meta}</div>
+        <div class="row">${p.desc}</div>
+        <div class="stats">${stats}</div>
+        <div class="stats" style="margin-top:4px">${stack}</div>
+      </div>`;
+    }).join('');
+    return h;
+  },
+
+  experience(){
+    let h = `<span class="c-dim"># work history</span>\n\n`;
+    h += '<div class="kv">';
+    h += PROFILE.experience.map(e=>{
+      return `<b style="color:var(--magenta)">${e.when}</b><span><span class="c-fg b">${e.role}</span>\n<span class="c-cyan">${e.org}</span> <span class="c-dim">· ${e.loc}</span></span>`;
+    }).join('');
+    h += '</div>';
+    h += `\n<div class="c-dim">${PROFILE.yearsXp}+ years total · always hands-on</div>`;
+    return h;
+  },
+
+  education(){
+    let h = `<span class="c-dim"># education</span>\n\n`;
+    h += '<div class="kv">';
+    h += PROFILE.education.map(e=>{
+      return `<b style="color:var(--magenta)">${e.when}</b><span><span class="c-fg b">${e.deg}</span>\n<span class="c-cyan">${e.org}</span> <span class="c-dim">· ${e.loc} · ${e.extra}</span></span>`;
+    }).join('');
+    h += '</div>';
+    return h;
+  },
+
+  certs(){
+    let h = `<span class="c-dim"># certifications</span>\n\n`;
+    h += PROFILE.certs.map(c=>`<div>  <span class="c-green">✓</span> <span class="c-dim">[${c.y}]</span> ${c.name}</div>`).join('');
+    return h;
+  },
+
+  platforms(){
+    let h = `<span class="c-dim"># kubernetes platforms i've certified apigee hybrid against</span>\n\n`;
+    const rows = [
+      ['gke',           'google cloud',     'k8s 1.28 — 1.30',      'core', 'green'],
+      ['gke-on-aws',    'aws',              'k8s 1.29 — 1.30',      'multicloud', 'cyan'],
+      ['eks',           'aws',              'k8s 1.28 — 1.30',      'managed',  'cyan'],
+      ['aks',           'azure',            'k8s 1.28 — 1.29',      'managed',  'cyan'],
+      ['openshift-aws', 'red hat / aws',    'k8s 1.28 — 1.30',      'managed',  'mag'],
+      ['vsphere',       'vmware',           'k8s 1.27 — 1.28',      'on-prem',  'orange'],
+      ['bare-metal',    'on-prem',          'k8s 1.28 — 1.30',      'self-host','orange'],
+    ];
+    h += '<div class="kv">';
+    h += rows.map(([n,p,k,t,c])=>`<b>${n}</b><span><span class="c-fg">${p}</span> <span class="c-dim">· ${k} · </span><span class="box ${c}">${t}</span></span>`).join('');
+    h += '</div>';
+    h += `\n<span class="c-dim">if it runs kubernetes, i've probably broken and re-fixed it.</span>`;
+    return h;
+  },
+
+  hobbies(){
+    let h = `<span class="c-dim"># when i'm off-call</span>\n\n`;
+    h += PROFILE.hobbies.map(b=>`<div><span class="c-cyan b">  ${b.ico}</span>  <span class="c-fg">${b.name}</span> <span class="c-dim">— ${b.note}</span></div>`).join('');
+    return h;
+  },
+
+  languages(){
+    let h = `<span class="c-dim"># spoken</span>\n\n`;
+    h += PROFILE.languages.map(l=>`<div class="lang-row"><span class="c-fg">${l.name}</span><div class="bar2"><div class="fill" style="width:${l.pct}%"></div></div><span class="c-dim">${l.level}</span></div>`).join('');
+    return h;
+  },
+
+  contact(){
+    return `<div class="kv">
+      <b>email</b>    <span><a class="link" href="mailto:${PROFILE.email}">${PROFILE.email}</a></span>
+      <b>phone</b>    <span>${PROFILE.phone}</span>
+      <b>github</b>   <span><a class="link" href="${PROFILE.github}" target="_blank" rel="noopener">${PROFILE.github.replace('https://','')}</a></span>
+      <b>linkedin</b> <span><a class="link" href="${PROFILE.linkedin}" target="_blank" rel="noopener">${PROFILE.linkedin.replace('https://','')}</a></span>
+      <b>location</b> <span>${PROFILE.location}</span>
+    </div>`;
+  },
+
+  resume(){
+    setTimeout(()=>window.open(PROFILE.resume,'_blank'), 400);
+    return `<span class="c-cyan">opening</span> ${PROFILE.resume} <span class="c-dim">in a new tab…</span>`;
+  },
+
+  neofetch(){
+    return `<div style="display:grid;grid-template-columns:max-content 1fr;gap:18px;align-items:start">
+      <pre class="ascii green" style="margin:0">${BANNER}</pre>
+      <div class="kv" style="font-size:13px">
+        <b>OS</b><span>HumanOS 27.0 (LTS)</span>
+        <b>Host</b><span>${PROFILE.name}</span>
+        <b>Role</b><span>${PROFILE.role}</span>
+        <b>Kernel</b><span>linux 6.x · kubernetes 1.30</span>
+        <b>Shell</b><span>zsh · oh-my-zsh</span>
+        <b>Editor</b><span>vim · still learning new motions</span>
+        <b>Uptime</b><span>${PROFILE.yearsXp}+ years in production</span>
+        <b>Pages</b><span>fewer since the rapid migration</span>
+        <b>Coffee</b><span>filter · strong</span>
+        <b>Status</b><span><span class="c-green">● open to opportunities</span></span>
+      </div>
+    </div>`;
+  },
+
+  ls(){
+    return `<span class="c-blue b">about.md</span>  <span class="c-blue b">projects/</span>  <span class="c-blue b">experience.md</span>  <span class="c-blue b">education.md</span>  <span class="c-blue b">platforms.md</span>  <span class="c-blue b">contact.md</span>  <span class="c-cyan">resume.pdf</span>  <span class="c-dim">.zshrc</span>  <span class="c-dim">.kube/</span>`;
+  },
+
+  cat(arg){
+    const f = (arg||'').toLowerCase().replace(/^\.\//,'').replace(/\.md$/,'');
+    if(!f) return `<span class="c-red">cat:</span> missing file operand. try <span class="c-cyan">ls</span>`;
+    if(f==='about')      return out.whoami();
+    if(f==='experience') return out.experience();
+    if(f==='education')  return out.education();
+    if(f==='contact')    return out.contact();
+    if(f==='platforms')  return out.platforms();
+    if(f==='resume.pdf' || f==='resume') return out.resume();
+    if(f==='.zshrc') return `<span class="c-dim"># ~/.zshrc</span>
+alias k='kubectl'
+alias kgp='kubectl get pods'
+alias kdp='kubectl describe pod'
+alias klog='kubectl logs -f --tail=200'
+alias tf='terraform'
+alias h='helm'
+alias g='git'
+<span class="c-dim"># the most important alias</span>
+alias please='sudo'`;
+    const proj = PROFILE.projects.find(p=>p.name.toLowerCase().includes(f) || p.stack.some(s=>s.toLowerCase().includes(f)));
+    if(proj){
+      const isBank = /banking/i.test(proj.meta);
+      const stats = proj.stats.map(([k,v])=>`<span class="box ${isBank?'orange':'cyan'}">${k}: <b>${v}</b></span>`).join(' ');
+      const stack = proj.stack.map(t=>`<span class="box">${t}</span>`).join(' ');
+      return `<div class="proj ${isBank?'bank':''}"><h>▸ ${proj.name}</h><div class="meta">${proj.meta}</div><div class="row">${proj.desc}</div><div class="stats">${stats}</div><div class="stats" style="margin-top:4px">${stack}</div></div>`;
+    }
+    return `<span class="c-red">cat:</span> ${arg}: No such file. try <span class="c-cyan">ls</span>`;
+  },
+
+  date(){ return new Date().toString(); },
+  uptime(){ return `up ${uptimeStr()} · load avg: 0.42, 0.51, 0.49 · <span class="c-green">all SLOs green</span>`; },
+  pwd(){ return '/home/'+PROFILE.handle+'/devops'; },
+  echo(args){ return args.join(' '); },
+  whois(){ return out.whoami(); },
+
+  hireme(){
+    return `<pre class="ascii mag">
+   ┌──────────────────────────────────────────────┐
+   │  authenticating…  ✓                          │
+   │  checking calendar…  ✓                       │
+   │  vibing…  ✓                                  │
+   │                                              │
+   │  i'd love to talk. send anything to:         │
+   │  → ${PROFILE.email.padEnd(42,' ')}│
+   │     ${PROFILE.phone.padEnd(41,' ')}│
+   │                                              │
+   │  i read everything. i reply within 24h.      │
+   └──────────────────────────────────────────────┘</pre>`;
+  },
+
+  matrix(){ startMatrix(); return `<span class="c-green">entering the matrix… click anywhere to exit</span>`; },
+
+  coffee(){ return `<pre class="ascii orange">
+      (  )   (   )  )
+       ) (   )  (  (
+       ( )  (    ) )
+       _____________
+      &lt;_____________&gt; ___
+      |             |/ _ \\
+      |               | | |
+      |               |_| |
+   ___|             |\\___/
+  /    \\___________/    \\
+  \\_____________________/</pre>
+<span class="c-dim">brewing… try again in 4 minutes</span>`; },
+
+  chess(){ return `<pre class="ascii">
+   8  ♜ ♞ ♝ ♛ ♚ ♝ ♞ ♜
+   7  ♟ ♟ ♟ ♟ ♟ ♟ ♟ ♟
+   6  · · · · · · · ·
+   5  · · · · · · · ·
+   4  · · · · ♙ · · ·
+   3  · · · · · · · ·
+   2  ♙ ♙ ♙ ♙ · ♙ ♙ ♙
+   1  ♖ ♘ ♗ ♕ ♔ ♗ ♘ ♖
+      a b c d e f g h
+</pre>
+<span class="c-dim">1. e4 — your move.</span>`; },
+
+  valorant(){ return `<span class="c-red b">VALORANT</span>  <span class="c-dim">— current agent:</span> <span class="c-cyan">Jett</span>  <span class="c-dim">· role:</span> <span class="c-yellow">duelist</span>
+<span class="c-dim">stats:</span> mid-elo · occasionally clutch · always blamed for the eco round`; },
+
+  summit(){ return `<pre class="ascii">
+                  /\\
+                 /  \\
+                /    \\
+               /  /\\  \\
+              /  /  \\  \\
+             /  / /\\ \\  \\
+            /  / /  \\ \\  \\
+           /  /_/____\\_\\  \\
+          /________________\\
+</pre>
+<span class="c-dim">there's no signal up here. that's the point.</span>`; },
+
+  theme(arg){
+    const t = (arg||'').toLowerCase();
+    const themes = {
+      tokyo:  { '--bg-0':'#0f1117','--bg-1':'#161821','--bg-2':'#1c1f2b','--bg-3':'#252836','--cyan':'#7dcfff','--green':'#c3e88d','--magenta':'#c099ff' },
+      matrix: { '--bg-0':'#000000','--bg-1':'#0a120a','--bg-2':'#0e180e','--bg-3':'#142014','--cyan':'#00ff9c','--green':'#00ff41','--magenta':'#5fff87' },
+      amber:  { '--bg-0':'#0d0a05','--bg-1':'#15110a','--bg-2':'#1d180e','--bg-3':'#2a2113','--cyan':'#ffb454','--green':'#ffcb6b','--magenta':'#ff966c' },
+    };
+    if(!themes[t]) return `available themes: <span class="c-cyan">tokyo</span> · <span class="c-green">matrix</span> · <span class="c-orange">amber</span>`;
+    Object.entries(themes[t]).forEach(([k,v])=>document.documentElement.style.setProperty(k,v));
+    return `theme set to <span class="c-cyan">${t}</span>`;
+  },
+
+  sudo(arg){
+    const s = (arg||'').toLowerCase();
+    if(s==='hire-me' || s==='hireme') return out.hireme();
+    if(s==='rm' || s.startsWith('rm ')) return `<span class="c-red">[sudo] permission denied:</span> nice try.`;
+    return `<span class="c-yellow">[sudo]</span> password for ${PROFILE.handle}: <span class="c-dim">****</span>\n<span class="c-red">Sorry, try again.</span>  <span class="c-dim">(try:</span> <span class="c-cyan">sudo hire-me</span><span class="c-dim">)</span>`;
+  },
+
+  history(){
+    return HISTORY.length===0
+      ? '<span class="c-dim">no commands yet</span>'
+      : HISTORY.map((c,i)=>`<div><span class="c-dim">${String(i+1).padStart(4,' ')}</span>  ${escHTML(c)}</div>`).join('');
+  },
+
+  exit(){ return `<span class="c-dim">connection to ${PROFILE.host} closed.</span>  <span class="c-cyan">just kidding — refresh to start over</span>`; },
+};
+
+/* ============================================================
+   Command parser
+============================================================ */
+const HISTORY = [];
+let histIdx = -1;
+
+const ALIASES = {
+  'projects':'projects','project':'projects','work':'projects',
+  'about':'whoami','me':'whoami','bio':'whoami',
+  'jobs':'experience','xp':'experience','exp':'experience',
+  'edu':'education','school':'education',
+  'mail':'contact','email':'contact','reach':'contact','social':'contact','links':'contact',
+  'cv':'resume','pdf':'resume',
+  'cls':'clear',
+  'time':'date','now':'date',
+  'man':'help','?':'help','h':'help',
+  'lang':'languages','langs':'languages',
+  'k8s':'platforms','kubernetes':'platforms','platform':'platforms',
+  'fun':'hobbies','hobby':'hobbies',
+};
+
+const COMMANDS = ['help','whoami','skills','projects','experience','education','certs','platforms','hobbies','languages','contact','resume','neofetch','ls','cat','pwd','date','uptime','clear','history','echo','theme','sudo','matrix','coffee','chess','valorant','summit','exit','about','hire-me'];
+
+function execute(raw){
+  const line = raw.trim();
+  if(line) HISTORY.push(line);
+  histIdx = HISTORY.length;
+
+  const lineEl = el('div','term-line');
+  lineEl.innerHTML = `${promptHTML()} <span class="c-fg">${escHTML(raw)}</span>`;
+  $term.appendChild(lineEl);
+
+  if(!line){ newPrompt(); return; }
+
+  let [cmd, ...args] = line.split(/\s+/);
+  cmd = cmd.toLowerCase();
+  cmd = ALIASES[cmd] || cmd;
+
+  if(cmd==='clear'){ $term.innerHTML=''; newPrompt(); return; }
+  if(cmd==='hire-me' || cmd==='hireme'){ appendLine(out.hireme()); newPrompt(); return; }
+
+  let result;
+  try{
+    if(typeof out[cmd]==='function') result = out[cmd](args.join(' '), args);
+    else if(cmd==='cat')  result = out.cat(args[0]);
+    else if(cmd==='echo') result = out.echo(args);
+    else result = `<span class="c-red">command not found:</span> ${escHTML(cmd)} <span class="c-dim">— try</span> <span class="c-cyan">help</span>`;
+  } catch(e){
+    result = `<span class="c-red">error:</span> ${escHTML(e.message)}`;
+  }
+  if(result) appendLine(result);
+  newPrompt();
+}
+
+function newPrompt(){
+  const old = document.getElementById('inputLine');
+  if(old) old.remove();
+
+  const row = el('div','term-line prompt-line');
+  row.id = 'inputLine';
+  row.innerHTML = `${promptHTML()} <span class="input-row"><input id="cmd" autocomplete="off" autocapitalize="off" spellcheck="false" /><span class="fake-caret"></span></span>`;
+  $term.appendChild(row);
+  scrollBottom();
+
+  const input = document.getElementById('cmd');
+  input.focus();
+  input.addEventListener('keydown', onKey);
+}
+
+function onKey(e){
+  const input = e.target;
+  if(e.key==='Enter'){
+    const v = input.value;
+    input.disabled = true;
+    document.getElementById('inputLine').id = '';
+    execute(v);
+  } else if(e.key==='ArrowUp'){
+    e.preventDefault();
+    if(histIdx>0){ histIdx--; input.value = HISTORY[histIdx]; setTimeout(()=>input.setSelectionRange(input.value.length,input.value.length),0); }
+  } else if(e.key==='ArrowDown'){
+    e.preventDefault();
+    if(histIdx<HISTORY.length-1){ histIdx++; input.value = HISTORY[histIdx]; }
+    else { histIdx = HISTORY.length; input.value=''; }
+  } else if(e.key==='Tab'){
+    e.preventDefault();
+    const v = input.value;
+    if(!v) return;
+    const matches = COMMANDS.filter(c=>c.startsWith(v.toLowerCase()));
+    if(matches.length===1) input.value = matches[0];
+    else if(matches.length>1){
+      appendLine(`<span class="c-dim">${matches.join('  ')}</span>`);
+      newPrompt();
+      document.getElementById('cmd').value = v;
+    }
+  } else if(e.ctrlKey && e.key==='l'){
+    e.preventDefault();
+    $term.innerHTML='';
+    newPrompt();
+  } else if(e.ctrlKey && e.key==='c'){
+    e.preventDefault();
+    const cur = input.value;
+    input.disabled = true;
+    document.getElementById('inputLine').id = '';
+    appendLine(`${promptHTML()} <span class="c-fg">${escHTML(cur)}</span><span class="c-red">^C</span>`);
+    newPrompt();
+  }
+}
+
+function escHTML(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'})[c]); }
+
+/* ============================================================
+   Boot sequence
+============================================================ */
+const BOOT = [
+  ['info', 'OpenSSH-9.6: connecting to portfolio.rajvaya.dev (203.0.113.42)…'],
+  ['info', 'Authenticating with publickey "ed25519" …'],
+  ['ok',   'Connected. Last login: ' + new Date().toUTCString()],
+  ['',     ''],
+  ['info', 'systemd[1]: starting portfolio.service …'],
+  ['ok',   '[  OK  ] Mounted /home/raj/devops'],
+  ['ok',   '[  OK  ] Loaded module: kubernetes (v1.30)'],
+  ['ok',   '[  OK  ] Loaded module: terraform  (v1.9)'],
+  ['ok',   '[  OK  ] Loaded module: helm       (v3.15)'],
+  ['ok',   '[  OK  ] Loaded module: apigee-hybrid (v1.13)'],
+  ['warn', '[ WARN ] coffee.service: pot empty — non-blocking'],
+  ['ok',   '[  OK  ] Started portfolio.service'],
+  ['',     ''],
+];
+
+async function boot(){
+  for(const [kind, msg] of BOOT){
+    const span = kind ? `<span class="${kind==='ok'?'ok':kind==='warn'?'warn':kind==='err'?'err':'info'}">${msg}</span>` : '';
+    appendLine(span, 'boot-line');
+    await sleep(55 + Math.random()*60);
+  }
+  appendLine(`<span class="ascii">${BANNER}</span>`);
+  appendLine(`<span class="c-fg b">${PROFILE.name}</span> <span class="c-dim">/</span> <span class="c-cyan">${PROFILE.role}</span>`);
+  appendLine(`<span class="c-dim">${PROFILE.tagline}</span>`);
+  appendLine('');
+  appendLine(`<span class="c-dim">type</span> <span class="box cyan">help</span> <span class="c-dim">to see what's available · </span> <span class="box green">projects</span> <span class="c-dim">·</span> <span class="box mag">platforms</span> <span class="c-dim">·</span> <span class="box orange">sudo hire-me</span>`);
+  appendLine('');
+  newPrompt();
+}
+
+const sleep = ms=>new Promise(r=>setTimeout(r,ms));
+
+/* ============================================================
+   Sidebar — live system metrics
+============================================================ */
+let cpu=32, mem=64, net=22, lat=14, rps=180, peak=180;
+const sparkBars = [];
+const sparkEl = document.getElementById('spark');
+for(let i=0;i<20;i++){
+  const b = el('div','b'); b.style.height='10%';
+  sparkEl.appendChild(b); sparkBars.push(b);
+}
+
+function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v))}
+function tick(){
+  cpu = clamp(cpu + (Math.random()-.5)*8, 14, 78);
+  mem = clamp(mem + (Math.random()-.5)*3, 55, 78);
+  net = clamp(net + (Math.random()-.5)*22, 5, 95);
+  lat = clamp(lat + (Math.random()-.5)*3, 8, 28);
+  rps = clamp(rps + (Math.random()-.5)*40, 90, 320);
+  peak = Math.max(peak, rps);
+
+  document.getElementById('cpuVal').textContent = cpu.toFixed(1)+'%';
+  document.getElementById('cpuBar').style.width = cpu+'%';
+  document.getElementById('memVal').textContent = mem.toFixed(1)+'%';
+  document.getElementById('memBar').style.width = mem+'%';
+  document.getElementById('netVal').textContent = (net*1.4).toFixed(0)+' MB/s';
+  document.getElementById('netBar').style.width = net+'%';
+  document.getElementById('latVal').textContent = lat.toFixed(1)+' ms';
+  document.getElementById('latBar').style.width = (lat/30*100)+'%';
+
+  document.getElementById('rpsNow').textContent = Math.round(rps);
+  document.getElementById('rpsPeak').textContent = Math.round(peak);
+
+  sparkBars.shift().remove();
+  const b = el('div','b'); b.style.height = (rps/350*100)+'%';
+  sparkEl.appendChild(b); sparkBars.push(b);
+}
+setInterval(tick, 1500); tick();
+
+const FEED = [
+  ['info','cert run started'  ,'apigee-hybrid 1.13 · gke 1.30'],
+  ['l',   'pr merged'         ,'platform-cert · #842'],
+  ['l',   'helm rollout ok'   ,'apigee-runtime · 4/4 healthy'],
+  ['l',   'vuln scan'         ,'new-relic-image · 0 critical'],
+  ['info','rapid retrigger'   ,'kokoro-job-2841 · auto'],
+  ['l',   'psql migrate'      ,'9.6 → 16 · instance-east-3'],
+  ['warn','helm chart retry'  ,'CrashLoopBackOff · resolved'],
+  ['l',   'cert renewed'      ,'*.apigee.dev · 90d'],
+  ['l',   'incident closed'   ,'INC-2143 · 4m08s'],
+  ['info','tf apply'          ,'vm-pool-prod · +3 nodes'],
+];
+const feedEl = document.getElementById('feed');
+function rt(){ const d=new Date(); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')+':'+String(d.getSeconds()).padStart(2,'0')}
+function pushFeed(){
+  const [k,t,m] = FEED[Math.floor(Math.random()*FEED.length)];
+  const line = `<div><span class="t">${rt()}</span><span class="l ${k==='l'?'':k}">${t}</span> <span class="c-dim">${m}</span></div>`;
+  feedEl.insertAdjacentHTML('afterbegin', line);
+  while(feedEl.children.length>6) feedEl.lastChild.remove();
+}
+['info','l','warn','l','l'].forEach(()=>pushFeed());
+setInterval(pushFeed, 4500);
+
+const startTime = Date.now();
+function uptimeStr(){
+  const s = Math.floor((Date.now()-startTime)/1000);
+  const d = Math.floor(s/86400), h = Math.floor((s%86400)/3600), m = Math.floor((s%3600)/60), ss = s%60;
+  return `${d}d ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+}
+setInterval(()=>{
+  document.getElementById('upt').textContent = uptimeStr();
+  const d=new Date();
+  document.getElementById('clock').innerHTML = `<b>${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}</b>`;
+},1000);
+
+function startMatrix(){
+  const o = el('div','matrix-overlay');
+  const c = document.createElement('canvas');
+  o.appendChild(c);
+  o.appendChild(el('div','hint','click or press ESC to exit'));
+  document.body.appendChild(o);
+
+  const ctx = c.getContext('2d');
+  function size(){ c.width=window.innerWidth; c.height=window.innerHeight; }
+  size();
+  const cols = Math.floor(c.width/14);
+  const drops = Array(cols).fill(1);
+  const chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノ01ABCDEF{}<>;:#$%&'.split('');
+  let stop=false;
+  function draw(){
+    ctx.fillStyle='rgba(0,0,0,0.08)';
+    ctx.fillRect(0,0,c.width,c.height);
+    ctx.fillStyle='#00ff9c';
+    ctx.font='14px VT323, monospace';
+    for(let i=0;i<drops.length;i++){
+      const t = chars[Math.floor(Math.random()*chars.length)];
+      ctx.fillText(t, i*14, drops[i]*14);
+      if(drops[i]*14 > c.height && Math.random()>.975) drops[i]=0;
+      drops[i]++;
+    }
+    if(!stop) requestAnimationFrame(draw);
+  }
+  draw();
+  function close(){ stop=true; o.remove(); window.removeEventListener('resize',size); document.removeEventListener('keydown',esc); }
+  o.addEventListener('click', close);
+  function esc(e){ if(e.key==='Escape') close(); }
+  document.addEventListener('keydown', esc);
+  window.addEventListener('resize', size);
+}
+
+document.addEventListener('click', e=>{
+  if(e.target.closest('a,button,.matrix-overlay')) return;
+  const i = document.getElementById('cmd');
+  if(i && !i.disabled) i.focus();
+});
+
+boot();
+</script>
+</body>
+</html>
