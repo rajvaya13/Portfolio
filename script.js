@@ -21,7 +21,7 @@ async function loadSections() {
   try {
     const partials = await Promise.all(
       SECTIONS.map(name =>
-        fetch(`${name}.html`)
+        fetch(`sections/${name}.html`)
           .then(res => {
             if (!res.ok) throw new Error(`Failed to load ${name}: ${res.status}`);
             return res.text();
