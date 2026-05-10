@@ -1412,12 +1412,11 @@ html[data-theme="light"] .exp-company-chip { background: rgba(0,0,0,0.025); }
 }
 .tech-strip-grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
   gap: 8px;
   position: relative; z-index: 1;
 }
-@media (max-width: 1100px) { .tech-strip-grid { grid-template-columns: repeat(5, 1fr); } }
-@media (max-width: 600px) { .tech-strip-grid { grid-template-columns: repeat(4, 1fr); } }
+@media (max-width: 600px) { .tech-strip-grid { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); } }
 @media (max-width: 380px) { .tech-strip-grid { grid-template-columns: repeat(3, 1fr); } }
 
 .tech-item {
