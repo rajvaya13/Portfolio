@@ -1468,9 +1468,10 @@ html[data-theme="light"] .tech-item { background: rgba(0,0,0,0.025); }
 /* Existing skill cards (categorized) */
 .skills-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 16px;
 }
+@media (max-width: 720px) { .skills-grid { grid-template-columns: 1fr; } }
 .skill-card {
   position: relative;
   padding: 28px;
@@ -2498,4 +2499,165 @@ html[data-theme="light"] .resume-actions { background: rgba(0,0,0,0.04); }
   }
   html[data-theme="light"] .nav-links.open { background: rgba(255,255,255,0.95); }
   .nav-links.open a { padding: 12px 14px; }
+}
+
+/* ============================================================
+   MOBILE POLISH - tightens spacing, scales fonts, fixes alignment
+   ============================================================ */
+
+/* Hero: tighter spacing on phones */
+@media (max-width: 720px) {
+  .hero { padding: 110px 0 60px; min-height: auto; }
+  .hero-headline {
+    font-size: clamp(38px, 9.5vw, 56px);
+    line-height: 1.02;
+    margin-bottom: 22px;
+  }
+  .hero-desc { font-size: 15.5px; margin-bottom: 28px; }
+  .hero-role { font-size: 12.5px; padding: 7px 12px; }
+  .status-bar {
+    flex-wrap: wrap;
+    font-size: 10.5px;
+    padding: 6px 6px 6px 10px;
+    gap: 8px;
+  }
+  .status-pill { padding: 4px 10px; font-size: 10.5px; }
+  .status-meta { font-size: 10.5px; }
+  .status-divider { display: none; }
+  .hero-greeting { font-size: 12.5px; }
+  .hero-stats { margin-top: 32px; gap: 8px; }
+  .hero-stat-card { padding: 14px 14px 12px; }
+  .hero-stat-card .v { font-size: 24px; }
+  .hero-ctas { gap: 8px; }
+  .hero-ctas .btn { padding: 9px 14px; font-size: 13px; }
+}
+
+/* Portrait card: don't shrink it too much on phones */
+@media (max-width: 720px) {
+  .hero-visual { min-height: 480px; }
+  .portrait-card { max-width: 380px; }
+  .portrait-info { padding: 12px 14px; }
+  .portrait-info-name { font-size: 18px; }
+  .portrait-info-role { font-size: 11px; }
+  .portrait-info-meta { font-size: 10.5px; gap: 10px; margin-top: 10px; padding-top: 10px; }
+  .portrait-status { padding: 5px 10px; font-size: 10px; top: 12px; left: 12px; }
+  .portrait-corner { width: 30px; height: 30px; top: 12px; right: 12px; }
+  .portrait-corner svg { width: 14px; height: 14px; }
+}
+@media (max-width: 480px) {
+  .hero-visual { min-height: 420px; }
+  .portrait-tag { font-size: 10px; padding: 6px 10px; }
+  .portrait-tag.tag-deploy { right: 4px; top: 4%; }
+  .portrait-tag.tag-cluster { left: 4px; }
+  .portrait-tag.tag-uptime { right: 4px; }
+}
+
+/* Marquee: narrower on phones */
+@media (max-width: 720px) {
+  .marquee-track { gap: 36px; padding: 16px 0; }
+  .marquee-item { font-size: 12.5px; }
+}
+
+/* Section titles: keep them readable */
+@media (max-width: 720px) {
+  .section-title {
+    font-size: clamp(28px, 7vw, 38px);
+    line-height: 1.1;
+  }
+  .section-lede { font-size: 15px; }
+  .section-head { margin-bottom: 40px; }
+  .eyebrow { font-size: 10px; padding: 5px 10px; }
+}
+
+/* About: terminal stays readable */
+@media (max-width: 720px) {
+  .about-prose .first { font-size: 18px; }
+  .about-prose p { font-size: 15px; line-height: 1.65; }
+  .terminal-body { font-size: 12px; padding: 18px 16px; line-height: 1.75; }
+  .interest { font-size: 12px; padding: 6px 12px; }
+}
+
+/* Tech strip: keep icons readable */
+@media (max-width: 480px) {
+  .tech-item .name { font-size: 9.5px; }
+  .tech-item .logo { width: 22px; height: 22px; }
+  .tech-strip { padding: 22px 20px 20px; }
+  .tech-strip-head { margin-bottom: 18px; padding-bottom: 14px; }
+}
+
+/* Skills cards: padding shrink */
+@media (max-width: 720px) {
+  .skill-card { padding: 22px; }
+  .skill-card h3 { font-size: 15px; }
+  .skill-list .pill { font-size: 11.5px; padding: 4px 9px; }
+}
+
+/* Services: card padding */
+@media (max-width: 720px) {
+  .service-card { padding: 24px; }
+  .service-card h3 { font-size: 19px; }
+  .service-card p { font-size: 13.5px; }
+}
+
+/* Education: stack cleaner on phones */
+@media (max-width: 720px) {
+  .edu-card { padding: 24px; gap: 18px; }
+  .edu-info h3 { font-size: 19px; }
+  .edu-info .meta { font-size: 11px; gap: 10px; }
+  .edu-foundations { padding: 20px 18px; }
+}
+
+/* Writing: featured + placeholder stack vertically on phones */
+@media (max-width: 900px) {
+  .writing-grid,
+  .writing-grid.writing-grid-2,
+  .writing-grid.writing-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 720px) {
+  .article-title { font-size: 20px; line-height: 1.25; }
+  .article-excerpt { font-size: 13.5px; }
+  .article-visual { aspect-ratio: 16 / 9; }
+  .article-platform, .article-featured-pill { font-size: 10px; padding: 4px 9px; }
+}
+
+/* Resume: stack columns earlier on small screens */
+@media (max-width: 720px) {
+  .resume-doc-head { padding: 14px 16px; gap: 10px; }
+  .resume-doc-name { font-size: 12px; }
+  .resume-doc-meta { font-size: 10.5px; gap: 8px; }
+  .resume-body { padding: 22px; gap: 24px; }
+  .resume-stat .v { font-size: 18px; }
+  .resume-stat .l { font-size: 9.5px; }
+  .resume-summary p { font-size: 13.5px; }
+  .resume-actions { padding: 18px 22px; gap: 8px; }
+  .resume-actions .btn.primary { min-width: 100%; padding: 12px; }
+}
+
+/* Contact: form padding & info cards */
+@media (max-width: 720px) {
+  .contact-text h2 { font-size: clamp(26px, 7vw, 36px); }
+  .contact-info a { padding: 12px 14px; gap: 12px; }
+  .contact-info .ic { width: 32px; height: 32px; }
+  .contact-info .val { font-size: 13.5px; word-break: break-all; }
+  .contact-info .label { font-size: 10px; }
+}
+
+/* Footer: tighter on phones */
+@media (max-width: 720px) {
+  .footer { padding: 40px 0 28px; }
+  .footer-grid { gap: 24px; margin-bottom: 32px; }
+  .footer h4 { margin-bottom: 12px; }
+  .footer ul a { font-size: 13.5px; }
+  .footer-tagline { font-size: 16px; }
+  .footer-bottom { font-size: 11px; gap: 10px; }
+}
+
+/* Container padding tighter on small phones */
+@media (max-width: 480px) {
+  .container { padding: 0 20px; }
+  .nav { width: calc(100% - 20px); padding: 8px 10px 8px 16px; }
+  .nav-brand { font-size: 12px; }
+  .nav-brand .logo { width: 24px; height: 24px; font-size: 10px; }
 }
