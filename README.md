@@ -7,7 +7,7 @@
 
 > Personal portfolio website for **Raj Vaya** - DevOps & Platform Engineer specializing in Kubernetes, multi-cloud infrastructure, and CI/CD automation.
 
-🌐 **Live:** https://raj-vaya-portfolio.vercel.app/
+🌐 **Live:** _add your Vercel URL here once deployed_
 
 ---
 
@@ -15,7 +15,7 @@
 
 A clean, futuristic portfolio built with vanilla HTML, CSS, and JavaScript - no frameworks, no build step, no dependencies beyond Google Fonts. Designed with a "control plane" aesthetic: dark by default, electric-lime accent, glassmorphic surfaces, and subtle DevOps-themed details (terminal blocks, kubectl-style outputs, pod-status pills, animated stat counters).
 
-The site is organized for clarity: a thin `index.html` shell, separate `styles.css` and `script.js`, and **each page section in its own HTML partial under `sections/`**. The shell loads the partials at runtime via `fetch()` and stitches them into the page.
+The site is organized for clarity: a thin `index.html` shell, separate `styles.css` and `script.js`, and **each page section in its own HTML partial under `sections/`**. The shell loads the partials at runtime via `fetch()` and stitches them into the page. Blog articles are rendered dynamically from a `data/articles.json` file - add a new article by editing JSON, no HTML required.
 
 ## Features
 
@@ -24,6 +24,7 @@ The site is organized for clarity: a thin `index.html` shell, separate `styles.c
 - **Education** - degree card with CGPA showcase and a "Core foundations" strip listing CS subjects
 - **Skills** - featured "Stack at a glance" panel with branded tech logos plus categorized skill cards
 - **Services** - six service cards with thematic icons and per-service deliverables
+- **Writing** - blog/article showcase, **dynamically rendered from `data/articles.json`** - layout auto-adapts to article count (1, 2, or 3+)
 - **Resume** - live PDF preview embedded inline with summary, stats, and download button
 - **Contact** - clean form with email, phone, location, and social links
 - **Light/dark mode toggle** - full theme system via CSS variables, persisted to localStorage
@@ -37,6 +38,7 @@ The site is organized for clarity: a thin `index.html` shell, separate `styles.c
 | Markup | HTML5 (semantic, modular partials) |
 | Styling | CSS3 (custom properties, grid, flexbox) |
 | Interactivity | Vanilla JS (no frameworks) |
+| Data | JSON (for blog articles) |
 | Typography | Bricolage Grotesque · Manrope · JetBrains Mono |
 | Hosting | Vercel (free tier) |
 | Versioning | Git + GitHub |
@@ -47,15 +49,18 @@ The site is organized for clarity: a thin `index.html` shell, separate `styles.c
 Portfolio/
 ├── index.html                    # shell: <head>, nav, footer, main container
 ├── styles.css                    # all styling
-├── script.js                     # loads sections, then initializes everything
+├── script.js                     # loads sections, renders articles, initializes everything
 ├── sections/
 │   ├── hero.html                 # hero + tech-stack marquee
 │   ├── about.html                # about prose, terminal, principles
 │   ├── education.html            # degree card + core foundations
 │   ├── skills.html               # "Stack at a glance" + skill cards
 │   ├── services.html             # six service cards
+│   ├── writing.html              # writing section frame (articles render dynamically)
 │   ├── resume.html               # summary + inline PDF preview
 │   └── contact.html              # contact form + socials
+├── data/
+│   └── articles.json             # list of blog articles (edit to add new posts)
 ├── profile.png                   # hero portrait image
 ├── Raj_Vaya_DevOps_Resume.pdf    # downloadable resume + inline PDF preview
 └── README.md
@@ -68,7 +73,7 @@ When the page loads, `script.js` runs a small `loadSections()` function that:
 1. Looks for `<main id="sections"></main>` in `index.html`
 2. Fetches each file listed in the `SECTIONS` array (`hero`, `about`, `education`, etc.) from the `sections/` folder
 3. Concatenates the HTML and injects it into the container
-4. Then runs `initApp()` which sets up theme toggle, scroll animations, typewriter, clock, mouse spotlight, and everything else
+4. Then runs `initApp()` which sets up theme toggle, scroll animations, typewriter, clock, mouse spotlight, dynamic article rendering, and everything else
 
 To add, remove, or reorder sections, edit the `SECTIONS` array at the top of `script.js`:
 
@@ -79,15 +84,46 @@ const SECTIONS = [
   'education',
   'skills',
   'services',
+  'writing',
   'resume',
   'contact'
 ];
 ```
 
-To add a new section called e.g. "blog":
-1. Create `sections/blog.html` with your `<section id="blog">…</section>` markup
-2. Add `'blog'` to the array in the position you want it
+To add a new section called e.g. "experience":
+1. Create `sections/experience.html` with your `<section id="experience">…</section>` markup
+2. Add `'experience'` to the array in the position you want it
 3. Add a link in the `<nav>` inside `index.html`
+
+## Adding a new blog article
+
+Open `data/articles.json` and add a new object to the top of the `articles` array. Push - the site picks it up automatically:
+
+```json
+{
+  "title": "Your article title",
+  "url": "https://medium.com/@rajvaya13/your-article-slug",
+  "platform": "Medium",
+  "tag": "DevSecOps",
+  "date": "Nov 2026",
+  "readTime": "7 min read",
+  "excerpt": "One or two sentences describing what the article covers.",
+  "stack": ["Kubernetes", "Helm", "Golang"],
+  "illustration": "k8s-cluster"
+}
+```
+
+The grid layout adjusts automatically based on article count:
+
+| # of articles | Layout |
+|---|---|
+| **1** | Featured card + "Follow on Medium" placeholder |
+| **2** | Two equal cards side by side |
+| **3+** | 3-column grid, all cards equal-sized |
+
+**Available `illustration` values:** `trivy-scan`, `k8s-cluster`, `cicd-pipeline`, or leave empty/use `default` for a generic backdrop. To create a new illustration, add a new key to the `illustrations` object inside `getIllustration()` in `script.js`.
+
+**Supported `platform` values for branded icons:** `Medium`, `Dev.to`, `Hashnode`. Anything else falls back to a generic document icon.
 
 ## Where to find things
 
@@ -98,12 +134,15 @@ To add a new section called e.g. "blog":
 | Education details, courses | `sections/education.html` | Edit directly |
 | Skill categories, tech logos | `sections/skills.html` | Edit directly |
 | Service cards & deliverables | `sections/services.html` | Edit directly |
+| Blog articles | `data/articles.json` | Edit JSON, no HTML |
+| Writing section heading / lede | `sections/writing.html` | Edit directly |
 | Resume summary, stats | `sections/resume.html` | Edit directly |
 | Contact info, form fields | `sections/contact.html` | Edit directly |
 | Nav links, footer | `index.html` | Edit directly (always-visible chrome) |
 | Colors, fonts, spacing | `styles.css` | Top of file: `:root { --accent: ... }` |
 | Typewriter roles | `script.js` | Search for `const roles = [` |
 | Live clock, counters | `script.js` | Search for `ccClock` / `data-count` |
+| Article card markup logic | `script.js` | Search for `articleCard(` or `getIllustration(` |
 
 ## Local Development
 
@@ -114,7 +153,7 @@ git clone https://github.com/rajvaya13/Portfolio.git
 cd Portfolio
 ```
 
-⚠️ **A local server is required**, because the section loader uses `fetch()` which is blocked when opening `index.html` directly via the `file://` protocol.
+⚠️ **A local server is required**, because the section loader and article loader use `fetch()` which is blocked when opening `index.html` directly via the `file://` protocol.
 
 Pick whichever you have:
 
@@ -149,7 +188,7 @@ All visual tokens live in CSS variables at the top of `styles.css`:
 
 To rebrand: change `--accent` (used everywhere) and the rest cascades.
 
-To swap content: open the relevant file under `sections/` and edit inline.
+To swap content: open the relevant file under `sections/` (or `data/articles.json` for blog posts) and edit inline.
 
 ## Deployment
 
@@ -165,14 +204,14 @@ Want to fork-and-deploy your own? After forking:
 3. Leave all settings default (it's a static site - no build step)
 4. Click **Deploy**
 
-Vercel serves over HTTPS, so the section loader works out of the box.
+Vercel serves over HTTPS, so the section loader and article loader work out of the box.
 
 ## Roadmap
 
-- [ ] Add a blog/articles section for DevOps writeups
 - [ ] Wire the contact form to a real backend (Formspree / Resend)
-- [ ] Add Open Graph + Twitter Card meta tags
+- [ ] Add Open Graph + Twitter Card meta tags for nicer link previews
 - [ ] Lighthouse audit for 100/100/100/100
+- [ ] Move skills and services to JSON-driven config like Writing
 - [ ] Optional 3D Kubernetes cluster visualization with Three.js
 
 ## Credits
@@ -194,6 +233,7 @@ MIT - feel free to fork, customize, and use as a starting point for your own por
 - 📧 [raj.vaya2017@gmail.com](mailto:raj.vaya2017@gmail.com)
 - 💼 [linkedin.com/in/raj-vaya](https://www.linkedin.com/in/raj-vaya)
 - 🐙 [github.com/rajvaya13](https://github.com/rajvaya13)
+- ✍️ [medium.com/@rajvaya13](https://medium.com/@rajvaya13)
 - 📍 Pune, Maharashtra, India
 
 ---

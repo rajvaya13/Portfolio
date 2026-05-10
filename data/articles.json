@@ -1,0 +1,20 @@
+{
+  "_comment": "Each article appears in the Writing section. Order top-to-bottom = order on the page. First article gets the 'featured' visual treatment. Add new articles to the top of this array. The 'illustration' field is optional - leave empty string to use the default gradient backdrop.",
+
+  "articles": [
+    {
+      "title": "Automating Docker Image Vulnerability Scanning with GitHub Actions",
+      "url": "https://medium.com/@rajvaya13/automating-docker-image-vulnerability-scanning-with-github-actions-for-devops-654a9a333db5",
+      "platform": "Medium",
+      "tag": "DevSecOps",
+      "date": "Jul 2024",
+      "readTime": "5 min read",
+      "excerpt": "A walkthrough on wiring Trivy into a GitHub Actions pipeline to scan Docker images for CVEs, generate JSON reports, and convert them into human-readable Markdown with Python - all on every push.",
+      "stack": ["GitHub Actions", "Trivy", "Docker", "Python", "CI/CD"],
+      "illustration": "trivy-scan"
+    }
+  ],
+
+  "followUrl": "https://medium.com/@rajvaya13",
+  "comingSoon": "Working on writeups around Kubernetes troubleshooting, multi-cloud certification automation, and Golang for platform tooling."
+}
