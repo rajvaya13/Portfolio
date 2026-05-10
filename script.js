@@ -83,6 +83,7 @@ function initApp() {
       }
     });
   }, { threshold: 0.12 });
+  window._revealObserver = io;
   document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
   // ----- Theme toggle -----
@@ -240,30 +241,58 @@ function initApp() {
 
 async function renderWriting() {
   const grid = document.getElementById('writingGrid');
-  if (!grid) return;
+  if (!grid) {
+    console.warn('renderWriting: #writingGrid element not found in DOM');
+    return;
+  }
+
+  // Show loading state immediately so the section never looks empty
+  grid.innerHTML = `<div class="article-card placeholder" style="grid-column: 1 / -1;">
+    <div class="placeholder-content">
+      <p style="color:var(--text-2);font-size:13.5px;">Loading articles…</p>
+    </div>
+  </div>`;
 
   let data;
   try {
-    const res = await fetch('data/articles.json');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const res = await fetch('data/articles.json', { cache: 'no-cache' });
+    if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
     data = await res.json();
+    console.log('Articles loaded:', data);
   } catch (err) {
     console.error('Could not load articles.json:', err);
-    grid.innerHTML = `<div class="article-card placeholder">
+    grid.innerHTML = `<div class="article-card placeholder" style="grid-column: 1 / -1;">
       <div class="placeholder-content">
-        <h4>Articles unavailable</h4>
-        <p style="color:var(--text-2);font-size:13.5px;">
-          Could not load <code>data/articles.json</code>. Make sure the file exists and the
-          site is being served over HTTP (not opened as <code>file://</code>).
+        <span class="placeholder-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/></svg>
+        </span>
+        <h4>Couldn't load articles</h4>
+        <p style="color:var(--text-2);font-size:13px;line-height:1.6;">
+          <code style="color:var(--accent);">data/articles.json</code> didn't load.<br>
+          Error: <code style="color:#ff7a7a;">${escapeHtml(String(err.message || err))}</code><br><br>
+          Make sure the file exists at <code style="color:var(--accent);">data/articles.json</code>
+          and that you're viewing this via HTTP (not <code>file://</code>).
         </p>
+        <a href="https://medium.com/@rajvaya13" target="_blank" rel="noopener" class="placeholder-link">
+          Visit my Medium
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7M7 7h10v10"/></svg>
+        </a>
       </div>
     </div>`;
     return;
   }
 
-  const articles = data.articles || [];
-  const followUrl = data.followUrl || '#';
-  const comingSoon = data.comingSoon || '';
+  const articles = (data && data.articles) || [];
+  const followUrl = (data && data.followUrl) || 'https://medium.com/@rajvaya13';
+  const comingSoon = (data && data.comingSoon) || 'More articles on the way.';
+
+  // Clear loading state
+  grid.classList.remove('writing-grid-2', 'writing-grid-3');
+
+  if (articles.length === 0) {
+    grid.innerHTML = followCard(followUrl, comingSoon);
+    return;
+  }
 
   // Adapt grid columns to article count
   if (articles.length >= 3) {
@@ -275,12 +304,17 @@ async function renderWriting() {
   // Build article cards
   const cards = articles.map((a, i) => articleCard(a, i === 0)).join('');
 
-  // Append placeholder ONLY if there's a single article (the right column would be empty otherwise)
+  // Append placeholder ONLY if there's a single article
   const placeholder = articles.length === 1
     ? followCard(followUrl, comingSoon)
     : '';
 
   grid.innerHTML = cards + placeholder;
+
+  // Re-trigger reveal observer on the freshly-injected cards
+  if (window._revealObserver) {
+    grid.querySelectorAll('.reveal').forEach(el => window._revealObserver.observe(el));
+  }
 }
 
 // ----- Article card builder -----
