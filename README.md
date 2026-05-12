@@ -7,7 +7,7 @@
 
 > Personal portfolio website for **Raj Vaya** - DevOps & Platform Engineer specializing in Kubernetes, multi-cloud infrastructure, and CI/CD automation.
 
-🌐 **Live:**[ _add your Vercel URL here once deployed_](https://raj-vaya-portfolio.vercel.app/)
+🌐 **Live:** https://raj-vaya-portfolio.vercel.app/
 
 ---
 
